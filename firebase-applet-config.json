@@ -1,0 +1,9 @@
+{
+  "apiKey": "AIzaSyMock-Key-Placeholder-For-Build",
+  "authDomain": "dsp-mock.firebaseapp.com",
+  "projectId": "dsp-mock",
+  "storageBucket": "dsp-mock.appspot.com",
+  "messagingSenderId": "1234567890",
+  "appId": "1:1234567890:web:mock",
+  "firestoreDatabaseId": "(default)"
+}

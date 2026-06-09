@@ -1,0 +1,6 @@
+{
+  "name": "Digital Study Planner",
+  "description": "A modern, personal student productivity app to organize schedules, classes, tasks, and focus sessions with a Pomodoro timer and beautiful statistics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

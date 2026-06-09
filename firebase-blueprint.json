@@ -1,0 +1,189 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile information and planner preference settings.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the student"
+        },
+        "grade": {
+          "type": "string",
+          "description": "Grade or academic level of the student"
+        },
+        "dailyStudyGoal": {
+          "type": "integer",
+          "description": "Daily study focus target in minutes"
+        },
+        "planType": {
+          "type": "string",
+          "enum": ["Free", "Premium"],
+          "description": "The user subscription pricing plan tier"
+        },
+        "darkMode": {
+          "type": "boolean",
+          "description": "User preference for dark appearance mode"
+        }
+      },
+      "required": ["name", "dailyStudyGoal", "planType", "darkMode"]
+    },
+    "Subject": {
+      "title": "Subject",
+      "description": "Color-coded academic course or subject.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the subject"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the academic subject"
+        },
+        "color": {
+          "type": "string",
+          "description": "Tailwind color class or Hex code"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The owner user ID matching request.auth.uid"
+        }
+      },
+      "required": ["id", "name", "color", "userId"]
+    },
+    "ClassSchedule": {
+      "title": "ClassSchedule",
+      "description": "Class or lab scheduled timings linked to a subject.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the class schedule"
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "The subject ID linked to this class slot"
+        },
+        "className": {
+          "type": "string",
+          "description": "Optional custom name for this specific lecture / lab"
+        },
+        "dayOfWeek": {
+          "type": "string",
+          "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "description": "Day of the week for the class"
+        },
+        "startTime": {
+          "type": "string",
+          "description": "Starting time in format HH:MM"
+        },
+        "endTime": {
+          "type": "string",
+          "description": "Ending time in format HH:MM"
+        },
+        "room": {
+          "type": "string",
+          "description": "Optional room number or online zoom link"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The owner user ID matching request.auth.uid"
+        }
+      },
+      "required": ["id", "subjectId", "dayOfWeek", "startTime", "endTime", "userId"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Task representing school assignments, homework, and test review topics.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the task"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title details of the assignment"
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "Associated subject identifier"
+        },
+        "dueDate": {
+          "type": "string",
+          "description": "Date in format YYYY-MM-DD"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["Low", "Medium", "High"],
+          "description": "The priority classification of the study task"
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Task completion state"
+        },
+        "completedAt": {
+          "type": "string",
+          "description": "Optional date when completion occurred in format YYYY-MM-DD"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The owner user ID matching request.auth.uid"
+        }
+      },
+      "required": ["id", "title", "dueDate", "priority", "completed", "userId"]
+    },
+    "FocusLog": {
+      "title": "FocusLog",
+      "description": "Focused pomodoro timer intervals logged.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the focus log"
+        },
+        "durationMinutes": {
+          "type": "integer",
+          "description": "Number of minutes of study sessions accumulated"
+        },
+        "dateTime": {
+          "type": "string",
+          "description": "Date of study session in YYYY-MM-DD format"
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "Optional subject focused on during the session"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The owner user ID matching request.auth.uid"
+        }
+      },
+      "required": ["id", "durationMinutes", "dateTime", "userId"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles collection indexed by UID"
+    },
+    "subjects/{subjectId}": {
+      "schema": "Subject",
+      "description": "Academic subjects linked to users"
+    },
+    "classes/{classId}": {
+      "schema": "ClassSchedule",
+      "description": "Schedules for classes linked to a subject"
+    },
+    "tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Tasks checklists for students"
+    },
+    "focusLogs/{logId}": {
+      "schema": "FocusLog",
+      "description": "Timer study logs for students"
+    }
+  }
+}

@@ -1,0 +1,155 @@
+rules_version = '2';
+service cloudfire.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global Safety Net (default-deny catch-all)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Explicit Entity Shape Validators
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['name', 'dailyStudyGoal', 'planType', 'darkMode'])
+        && data.keys().size() <= 6
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.dailyStudyGoal is int && data.dailyStudyGoal >= 0 && data.dailyStudyGoal <= 1440
+        && data.planType is string && (data.planType == 'Free' || data.planType == 'Premium')
+        && data.darkMode is bool
+        && (!data.keys().hasAny(['grade']) || (data.grade is string && data.grade.size() <= 100));
+    }
+
+    function isValidSubject(data) {
+      return data.keys().hasAll(['id', 'name', 'color', 'userId'])
+        && data.keys().size() == 4
+        && data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.color is string && data.color.size() <= 20
+        && data.userId is string && data.userId.size() <= 128;
+    }
+
+    function isValidClassSchedule(data) {
+      return data.keys().hasAll(['id', 'subjectId', 'dayOfWeek', 'startTime', 'endTime', 'userId'])
+        && data.keys().size() <= 8
+        && data.id is string && data.id.size() <= 128
+        && data.subjectId is string && data.subjectId.size() <= 128
+        && data.dayOfWeek is string && (data.dayOfWeek == 'Monday' || data.dayOfWeek == 'Tuesday' || data.dayOfWeek == 'Wednesday' || data.dayOfWeek == 'Thursday' || data.dayOfWeek == 'Friday' || data.dayOfWeek == 'Saturday' || data.dayOfWeek == 'Sunday')
+        && data.startTime is string && data.startTime.size() == 5
+        && data.endTime is string && data.endTime.size() == 5
+        && data.userId is string && data.userId.size() <= 128
+        && (!data.keys().hasAny(['className']) || (data.className is string && data.className.size() <= 100))
+        && (!data.keys().hasAny(['room']) || (data.room is string && data.room.size() <= 100));
+    }
+
+    function isValidTask(data) {
+      return data.keys().hasAll(['id', 'title', 'dueDate', 'priority', 'completed', 'userId'])
+        && data.keys().size() <= 8
+        && data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 200
+        && data.dueDate is string && data.dueDate.size() == 10
+        && data.priority is string && (data.priority == 'Low' || data.priority == 'Medium' || data.priority == 'High')
+        && data.completed is bool
+        && data.userId is string && data.userId.size() <= 128
+        && (!data.keys().hasAny(['subjectId']) || (data.subjectId is string && data.subjectId.size() <= 128))
+        && (!data.keys().hasAny(['completedAt']) || (data.completedAt is string && data.completedAt.size() <= 20));
+    }
+
+    function isValidFocusLog(data) {
+      return data.keys().hasAll(['id', 'durationMinutes', 'dateTime', 'userId'])
+        && data.keys().size() <= 5
+        && data.id is string && data.id.size() <= 128
+        && data.durationMinutes is int && data.durationMinutes > 0 && data.durationMinutes <= 1440
+        && data.dateTime is string && data.dateTime.size() <= 30
+        && data.userId is string && data.userId.size() <= 128
+        && (!data.keys().hasAny(['subjectId']) || (data.subjectId is string && data.subjectId.size() <= 128));
+    }
+
+    // Rules matching individual paths 
+
+    // Users Profiles
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserProfile(incoming());
+      allow update: if isOwner(userId) 
+                    && isValidUserProfile(incoming())
+                    && incoming().planType == existing().planType; // Prevent manual subscription spoofing/privilege elevation
+      allow delete: if isOwner(userId);
+    }
+
+    // Subjects
+    match /subjects/{subjectId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(subjectId) && isValidSubject(incoming()) && incoming().userId == request.auth.uid;
+      allow update: if isSignedIn() 
+                    && isValidId(subjectId)
+                    && isValidSubject(incoming())
+                    && incoming().userId == request.auth.uid
+                    && existing().userId == request.auth.uid
+                    && incoming().id == existing().id;
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+
+    // Classes
+    match /classes/{classId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(classId) && isValidClassSchedule(incoming()) && incoming().userId == request.auth.uid;
+      allow update: if isSignedIn() 
+                    && isValidId(classId)
+                    && isValidClassSchedule(incoming())
+                    && incoming().userId == request.auth.uid
+                    && existing().userId == request.auth.uid
+                    && incoming().id == existing().id;
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+
+    // Tasks
+    match /tasks/{taskId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(taskId) && isValidTask(incoming()) && incoming().userId == request.auth.uid;
+      allow update: if isSignedIn() 
+                    && isValidId(taskId)
+                    && isValidTask(incoming())
+                    && incoming().userId == request.auth.uid
+                    && existing().userId == request.auth.uid
+                    && incoming().id == existing().id;
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+
+    // Focus Logs
+    match /focusLogs/{logId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(logId) && isValidFocusLog(incoming()) && incoming().userId == request.auth.uid;
+      allow update: if isSignedIn() 
+                    && isValidId(logId)
+                    && isValidFocusLog(incoming())
+                    && incoming().userId == request.auth.uid
+                    && existing().userId == request.auth.uid
+                    && incoming().id == existing().id;
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+  }
+}
