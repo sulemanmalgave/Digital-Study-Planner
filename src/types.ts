@@ -43,3 +43,12 @@ export interface UserProfile {
   darkMode: boolean;
   avatarColor?: string;
 }
+
+export interface Note {
+  id: string;
+  title: string;
+  content: string;
+  subjectId?: string;
+  updatedAt: string; // ISO string
+}
+
