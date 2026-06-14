@@ -56,7 +56,7 @@ export default function App() {
           <div className="absolute inset-0 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
         </div>
         <p className="text-sm font-semibold text-slate-400 tracking-wide animate-pulse">
-          Synchronizing Your Study Planner...
+          Synchronizing Your Digital Study Planner...
         </p>
       </div>
     );

@@ -1,27 +1,54 @@
 {
   "name": "Digital Study Planner",
-  "short_name": "Study Planner",
-  "description": "A comprehensive digital study planner for students to manage timetable, tasks, assignments, and focus sessions.",
+  "short_name": "Digital Study Planner",
+  "description": "Boost your productivity and master your classes with the Digital Study Planner. Track homework assignments, organize exams, schedule timetable classes, set study session milestones, and run smart focused Pomodoro sessions.",
+  "categories": [
+    "education",
+    "productivity",
+    "utilities"
+  ],
+  "lang": "en",
+  "dir": "ltr",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
   "theme_color": "#4f46e5",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Digital Study Planner Desktop Dashboard Layout"
+    },
+    {
+      "src": "/screenshots/mobile.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Digital Study Planner Mobile Homework and Timer Layout"
     }
   ]
 }
