@@ -9,7 +9,7 @@
   ],
   "lang": "en",
   "dir": "ltr",
-  "id": "/",
+  "id": "/dsp-app-2026",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -17,6 +17,22 @@
   "theme_color": "#4f46e5",
   "prefer_related_applications": false,
   "icons": [
+    {
+      "src": "/icons/icon-192.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/icons/icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/maskable-icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    },
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
@@ -35,6 +51,20 @@
     }
   ],
   "screenshots": [
+    {
+      "src": "/screenshots/desktop.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Digital Study Planner Desktop Dashboard Layout"
+    },
+    {
+      "src": "/screenshots/mobile.jpg",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Digital Study Planner Mobile Homework and Timer Layout"
+    },
     {
       "src": "/screenshots/desktop.png",
       "sizes": "1280x720",
