@@ -76,12 +76,13 @@ service cloudfire.firestore {
 
     function isValidFocusLog(data) {
       return data.keys().hasAll(['id', 'durationMinutes', 'dateTime', 'userId'])
-        && data.keys().size() <= 5
+        && data.keys().size() <= 6
         && data.id is string && data.id.size() <= 128
         && data.durationMinutes is int && data.durationMinutes > 0 && data.durationMinutes <= 1440
         && data.dateTime is string && data.dateTime.size() <= 30
         && data.userId is string && data.userId.size() <= 128
-        && (!data.keys().hasAny(['subjectId']) || (data.subjectId is string && data.subjectId.size() <= 128));
+        && (!data.keys().hasAny(['subjectId']) || (data.subjectId is string && data.subjectId.size() <= 128))
+        && (!data.keys().hasAny(['notes']) || (data.notes is string && data.notes.size() <= 500));
     }
 
     // Rules matching individual paths 

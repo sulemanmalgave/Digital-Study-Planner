@@ -59,7 +59,7 @@ interface PlannerContextType {
   editTask: (id: string, updated: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   toggleTask: (id: string) => Promise<void>;
-  addFocusSession: (durationMinutes: number, subjectId?: string) => Promise<void>;
+  addFocusSession: (durationMinutes: number, subjectId?: string, notes?: string) => Promise<void>;
 }
 
 const PlannerContext = createContext<PlannerContextType | undefined>(undefined);
@@ -601,13 +601,14 @@ export function PlannerProvider({ children }: { children: ReactNode }) {
   };
 
   // Focus Sessions operations
-  const addFocusSession = async (durationMinutes: number, subjectId?: string) => {
+  const addFocusSession = async (durationMinutes: number, subjectId?: string, notes?: string) => {
     const id = `log-${Date.now()}`;
     const log: FocusLog = {
       id,
       durationMinutes,
       dateTime: new Date().toISOString().split('T')[0],
       subjectId,
+      notes,
     };
 
     if (isFirebaseConfigured && currentUser) {
@@ -618,6 +619,7 @@ export function PlannerProvider({ children }: { children: ReactNode }) {
           durationMinutes,
           dateTime: log.dateTime,
           subjectId: subjectId || '',
+          notes: notes || '',
           userId: currentUser.uid,
         });
       } catch (error) {

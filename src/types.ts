@@ -33,6 +33,7 @@ export interface FocusLog {
   durationMinutes: number;
   dateTime: string;    // "YYYY-MM-DD" or timestamp
   subjectId?: string;  // Subject focused on
+  notes?: string;      // Optional session notes
 }
 
 export interface UserProfile {

@@ -156,6 +156,10 @@
           "type": "string",
           "description": "Optional subject focused on during the session"
         },
+        "notes": {
+          "type": "string",
+          "description": "Optional session summary/notes"
+        },
         "userId": {
           "type": "string",
           "description": "The owner user ID matching request.auth.uid"

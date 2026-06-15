@@ -40,6 +40,7 @@ export default function FocusView({
   const [secondsLeft, setSecondsLeft] = useState(getInitialSeconds('pomodoro'));
   const [isActive, setIsActive] = useState(false);
   const [selectedSubjectId, setSelectedSubjectId] = useState('');
+  const [sessionNotes, setSessionNotes] = useState('');
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -75,7 +76,8 @@ export default function FocusView({
       ? customMinutes 
       : DURATIONS[mode === 'short' || mode === 'long' ? 'short' : 'pomodoro'];
     
-    onAddFocusSession(currentDurationMinutes, selectedSubjectId || undefined);
+    onAddFocusSession(currentDurationMinutes, selectedSubjectId || undefined, sessionNotes);
+    setSessionNotes(''); // Reset notes
     
     // Play generic sound or alerts using Audio API simply (safe client helper)
     try {
@@ -258,6 +260,16 @@ export default function FocusView({
             )}
           </div>
 
+          {/* Quick Notes Area */}
+          <div className="mt-4 w-full max-w-sm">
+            <textarea
+              className="w-full h-20 bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-400 focus:outline-none focus:border-indigo-500 transition-colors"
+              placeholder="Session notes or summary (optional)..."
+              value={sessionNotes}
+              onChange={e => setSessionNotes(e.target.value)}
+            />
+          </div>
+
           {/* Quick preset sliders */}
           <div className="mt-8 flex flex-wrap gap-2 justify-center">
             {[10, 15, 25, 45, 60].map(mins => (
@@ -345,6 +357,7 @@ export default function FocusView({
                       <div className="min-w-0">
                         <span className="text-[10px] font-bold text-slate-200 block truncate">{s ? s.name : 'Focus Session'}</span>
                         <span className="text-[8px] text-slate-500 block mt-0.5">{log.dateTime}</span>
+                        {log.notes && <p className="text-[9px] text-slate-400 mt-1 truncate max-w-[150px]">{log.notes}</p>}
                       </div>
                       <span className="text-[10px] font-black text-indigo-400 shrink-0 bg-indigo-500/10 py-1 px-2 rounded-lg">
                         +{log.durationMinutes}m
