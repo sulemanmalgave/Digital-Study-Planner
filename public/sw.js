@@ -3,11 +3,9 @@ const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/maskable-icon-512.png',
-  '/screenshots/desktop.png',
-  '/screenshots/mobile.png'
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/icons/maskable-icon-512.png'
 ];
 
 // Install Event
