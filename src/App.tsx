@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 
 import AppIcon from './assets/images/uploaded_user_icon_1781429865349.jpg';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 export default function App() {
   const {
@@ -623,6 +624,7 @@ export default function App() {
         </div>
       )}
 
+      <SpeedInsights />
     </div>
   );
 }
